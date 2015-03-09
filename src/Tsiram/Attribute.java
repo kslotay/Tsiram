@@ -1,5 +1,7 @@
 package Tsiram;
+//Kulvinder Lotay and Scott Jaffe
 
+//Item-specific math procedures. For elements that require an upper limit e.g. ammo, health etc.
 public class Attribute {
 	
 	private Integer value;

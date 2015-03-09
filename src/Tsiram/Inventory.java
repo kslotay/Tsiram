@@ -1,5 +1,6 @@
 package Tsiram;
 import java.util.*;
+//Kulvinder Lotay and Scott Jaffe
 
 public class Inventory extends ArrayList<InventoryItem>{
 
