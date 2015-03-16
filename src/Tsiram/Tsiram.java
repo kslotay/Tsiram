@@ -15,10 +15,9 @@ import java.io.*;
 public class Tsiram {
 	
 	//ArrayList that holds all instantiated Location objects
-	
 	public static ArrayList<Location> locationArray = new ArrayList<Location>();
 	
-	//starts player object
+	//Creates player object
 	public static Player player1;
 	
 	/**
@@ -29,7 +28,9 @@ public class Tsiram {
 
 		//Holds player response
 		String response;
+		//Scanner for user input
 		Scanner scan = new Scanner(System.in);
+		//Integer that holds new location index
 		Integer newLoc = new Integer(0);
 		
 		//Initialize game parameters
@@ -37,19 +38,33 @@ public class Tsiram {
 		init_items();
 		init_game();
 		
-		//Handles player responses
+		//Handle player responses, running applicable methods for the different commands
 		do{
+			
+			//Displays the current location
 			update_display("Your current Location is: " + locationArray.get(player1.getLoc()).getName() + "\n\n");
+			
+			//Displays current location description, along with any items that may be in that location
 			update_display(locationArray.get(player1.getLoc()).currentDesc());
+			
+			//Request player input
 			update_display("\n\nEnter your next move: ");
+			
+			//Store player response in response string variable
 			response = scan.next();
+			
 			if (response.equalsIgnoreCase("n") || response.equalsIgnoreCase("north")){
+				//Get new location index using current player location and direction
 				newLoc = navigate(player1.getLoc(), 0);
+				//Check if that particular navigation is possible
 				if(newLoc != -1){
-					locationArray.get(player1.getLoc()).visited();
+					//Use move method from Person class to assign new player location
 					player1.move(newLoc);
+					//Increment visited integer for that location
+					locationArray.get(player1.getLoc()).visited();
 				}
 				else{
+					//If action is not possible, display error message
 					update_display("You cannot go north!\n");
 				}
 			}
@@ -84,17 +99,22 @@ public class Tsiram {
 				}
 			}
 			else if (response.equalsIgnoreCase("take") || response.equalsIgnoreCase("t")){
+				//Check if location has usable items (comparing usable boolean for items)
 				if(locationArray.get(player1.getLoc()).inventory.usableItems() > 0){
+					//If there are usable items, take 1 of each (if more than 1)
 					update_display("\nYou have taken:\n");
 					for (int i = 0, len = locationArray.get(player1.getLoc()).inventory.size(); i < len; i++){
 						if (locationArray.get(player1.getLoc()).inventory.get(i).item.usable){
+							//Add item to player inventory
 							player1.inventory.addItem(locationArray.get(player1.getLoc()).inventory.get(i).item, 1);
 							update_display(locationArray.get(player1.getLoc()).inventory.get(i).item.name + " x 1\n");
+							//Remove item from location inventory
 							locationArray.get(player1.getLoc()).inventory.removeItem(locationArray.get(player1.getLoc()).inventory.get(i).item, 1);
 						}
 					}
 				}
 			}
+			//Display player inventory
 			else if (response.equalsIgnoreCase("inventory") || response.equalsIgnoreCase("i")){
 				if (!player1.inventory.isEmpty()){
 					update_display(player1.getInventory());
@@ -103,6 +123,7 @@ public class Tsiram {
 					update_display("\nYou have no items in inventory");
 				}
 			}
+			//Show map if player has map in inventory
 			else if (response.equalsIgnoreCase("m") || response.equalsIgnoreCase("map")){
 				if (player1.inventory.hasItem("Map")){
 					drawMap();
@@ -111,10 +132,12 @@ public class Tsiram {
 					update_display("You do not have the map in your inventory!");
 				}
 			}
+			//Quit game
 			else if (response.equalsIgnoreCase("q")){
-				update_display("Thanks for playing!\n");
+				update_display("\nThanks for playing!\n");
 			}
 		} while (!response.equalsIgnoreCase("q"));
+		
 		scan.close();
 	}
 	
@@ -123,16 +146,18 @@ public class Tsiram {
 	
 		//Locations.txt file template: Location_name/Message/Desc1/Desc2/Desc3/N/E/S/W/
 		
+		//Temporary variables for location data
 		String name, msg;
 		String[] desc = new String[3];
 		Integer[] nav = new Integer[4];
-		
 		Location temp_loc;
 		
+		//Filescanner using appropriate delimiter for Locations.txt file
 		Scanner fileScan = new Scanner(new File("Locations.txt"));
 		fileScan.useDelimiter("/");
 		
 		while(fileScan.hasNext()){
+			//Assign values to related temp variables
 			name = fileScan.next();
 			msg = fileScan.next();
 			desc[0] = fileScan.next();
@@ -146,6 +171,7 @@ public class Tsiram {
 			temp_loc.setMessage(msg);
 			temp_loc.setLocDesc(desc[0], desc[1], desc[2]);
 			temp_loc.setNav(nav[0], nav[1], nav[2], nav[3]);
+			//Add location to locationArray
 			locationArray.add(temp_loc);
 			fileScan.nextLine();
 		}
@@ -158,6 +184,7 @@ public class Tsiram {
 		
 		//Items.txt file template: Item_type/Location_id/Name/Description/Value/Usable/Quantity/
 		
+		//Temporary variables for items data
 		int loc_id, value, damage, ammo, quantity, cash_amount, coins_amount;
 		String name, desc, code;
 		Boolean usable, locked;
@@ -173,6 +200,7 @@ public class Tsiram {
 		while (fileScan.hasNext()) {
 			String item_type = fileScan.next();
 			
+			//Instantiate items and add to appropriate location inventories
 			if (item_type.equals("Item")){
 				loc_id = Integer.parseInt(fileScan.next());
 				name = fileScan.next();
@@ -225,13 +253,16 @@ public class Tsiram {
 	//Initialize game
 	private static void init_game() {	
 				
+		//Initialize player
 		player1 = new Player("Player1", 0, 1000, 100);
 		player1.xp.new_max(100);
 		
+		//Intro display messages
 		update_display("Welcome to Tsiram!\n\n");
 		update_display("Move using n, e, s, w. To quit the game, type q at any time.\n\n");
 	}
 	
+	//Draw ASCII Map
 	private static void drawMap(){
 		update_display(" ____________________ ____________________ ____________________ \n");
 		String name;
@@ -242,12 +273,14 @@ public class Tsiram {
 			name_len = locationArray.get(i).getName().length();
 			space_len = 20 - name_len;
 			
+			//Current player location marked with (X)
 			if (i == player1.getLoc()){
 				if (space_len >= 3){
 					name = locationArray.get(i).getName() + "(X)";
 					space_len -= 3;
 				}
 				else {
+					//Location names that are longer than available spaces are shortened. "--" appended at end.
 					name = locationArray.get(i).getName().substring(0, 12) + "-- (X)";
 				}
 			}
@@ -256,21 +289,24 @@ public class Tsiram {
 					name = locationArray.get(i).getName();
 				}
 				else {
-					name = locationArray.get(i).getName().substring(0, 19) + "-";
+					name = locationArray.get(i).getName().substring(0, 18) + "--";
 				}
 			}
-
+			
+			//Display location name in caps
 			update_display("|" + name.toUpperCase());
 			for (int x = 0; x < space_len; x++){
 				update_display(" ");
 			}
 			
+			//Final columns have specific draw instructions
 			switch (i){
 			case 2:
 			case 5:
 			case 8:
 				update_display("|\n");
 				for (int x = 0; x < 4; x++){
+					//Final row contains bottom border
 					if (x == 3){
 						update_display("|____________________|____________________|____________________|\n");
 					}
@@ -283,13 +319,16 @@ public class Tsiram {
 		}
 	}
 	
-	//navigation method
+	//Navigation method, returns -1 for navigation actions that are not permitted
 	private static Integer navigate(Integer current_loc, Integer dir){
+		//Uses location navigation data from the current location navigation array
 		Integer dest = locationArray.get(current_loc).getNav()[dir];
 		return dest;
 	}
 	
+	//Display method
 	private static void update_display(String str){
+		//Checks for string length. If it is greater than 100 characters, it breaks it down into multiple lines and displays it as such
 		if (str.length() > 100){
 			System.out.print(str.substring(0, 100) + "-" + "\n");
 			if (str.length() > 200) {

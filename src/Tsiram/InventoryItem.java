@@ -1,6 +1,7 @@
 package Tsiram;
 //Kulvinder Lotay and Scott Jaffe
 
+//Inventory item class used as subclass for Inventory. The Inventory is an ArrayList of type InventoryItem, which contains an Item and Quantity.
 public class InventoryItem {
 	
 	public Item item;

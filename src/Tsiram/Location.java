@@ -6,13 +6,16 @@ public class Location {
 	//Counter for location visits
 	private int visited = 0;
 	
+	//Location name
 	private String name;
 	
 	//Location descriptions
 	private String[] desc = new String[3];
 	
+	//Location message, e.g. for particular event that may take place during gameplay
 	private String message;
 	
+	//Location can be locked
 	private boolean locked = false;
 	
 	//Navigation array integer, called in main class
@@ -26,12 +29,14 @@ public class Location {
 		this.name = name;
 	}
 	
+	//Set location descriptions
 	public void setLocDesc(String desc0, String desc1, String desc2) {
 		this.desc[0] = desc0;
 		this.desc[1] = desc1;
 		this.desc[2] = desc2;
 	}
 	
+	//Set Location description
 	public void setMessage(String msg){
 		message = msg;
 	}
@@ -45,10 +50,12 @@ public class Location {
 		}
 	}
 	
+	//Return location name
 	public String getName() {
 		return name;
 	}
 	
+	//Return current description according to visited counter and location inventory
 	public String currentDesc() {
 		int current_desc;
 		String msg = new String();
@@ -72,27 +79,32 @@ public class Location {
 		return desc[current_desc] + msg;
 	};
 	
+	//Return location message
 	public String getMessage(){
 		return message;
 	}
 	
-	//Returns instance's navigation array
+	//Return location's specific navigation array
 	public Integer[] getNav(){
 		return nav_array;
 	}
 	
+	//Check if location is locked
 	public Boolean isLocked() {
 		return locked;
 	}
 	
+	//Unlock location
 	public void unlock(){
 		locked = false;
 	}
 	
+	//Lock location
 	public void lock(){
 		locked = true;
 	}
 	
+	//Increment location visited counter
 	public void visited(){
 		visited++;
 	}

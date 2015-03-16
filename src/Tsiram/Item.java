@@ -1,6 +1,7 @@
 package Tsiram;
 //Kulvinder Lotay and Scott Jaffe
 
+//Basic Item class
 public class Item {
 
 	//public values for generic Item class
