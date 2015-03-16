@@ -9,9 +9,7 @@ public class Location {
 	private String name;
 	
 	//Location descriptions
-	private String desc0;
-	private String desc1;
-	private String desc2;
+	private String[] desc = new String[3];
 	
 	private String message;
 	
@@ -29,9 +27,9 @@ public class Location {
 	}
 	
 	public void setLocDesc(String desc0, String desc1, String desc2) {
-		this.desc0 = desc0;
-		this.desc1 = desc1;
-		this.desc2 = desc2;
+		this.desc[0] = desc0;
+		this.desc[1] = desc1;
+		this.desc[2] = desc2;
 	}
 	
 	public void setMessage(String msg){
@@ -53,8 +51,7 @@ public class Location {
 	
 	public String currentDesc() {
 		int current_desc;
-		
-		String[] desc = {desc0, desc1, desc2};
+		String msg = new String();
 		
 		switch(this.visited) {
 		case 0:
@@ -67,7 +64,12 @@ public class Location {
 			current_desc = 2;
 		}
 		
-		return desc[current_desc];
+		if(inventory.usableItems() > 0){
+			msg = "\n\nThe location contains:\n";
+			msg += inventory.toString();
+		}
+		
+		return desc[current_desc] + msg;
 	};
 	
 	public String getMessage(){

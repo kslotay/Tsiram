@@ -22,6 +22,14 @@ public class Inventory extends ArrayList<InventoryItem>{
 		return findItem(item.name);
 	}
 	
+	public Boolean hasItem(String itemName){
+		Boolean hasItem = new Boolean(false);
+		if (findItem(itemName) != null){
+			hasItem = true;
+		}
+		return hasItem;
+	}
+	
 	private void editInventory(Item item, Integer num, Integer type){
 		InventoryItem invItem = getItem(item);
 		
@@ -53,4 +61,24 @@ public class Inventory extends ArrayList<InventoryItem>{
 		editInventory(item, num, 1);
 	}
 	
+	public Integer usableItems(){
+		Integer count = new Integer(0);
+		for (int i = 0, len = this.size(); i < len; i++){
+			if (this.get(i).item.usable){
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	//Returns usable inventory items
+	public String toString(){
+		String str = new String("");
+		for (int i = 0, len = this.size(); i < len; i++){
+			if (this.get(i).item.usable){
+				str += this.get(i).item.name + " x " +  this.get(i).quantity + "\n";
+			}
+		}
+		return str;
+	}
 }

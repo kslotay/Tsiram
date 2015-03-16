@@ -2,11 +2,11 @@ package Tsiram;
 
 public class Person {
 	
-	public String name;
+	private String name;
 	
-	public Inventory inventory;
+	private Integer location;
 	
-	public Integer location;
+	public Inventory inventory = new Inventory();
 	
 	public Attribute health;
 	
@@ -16,7 +16,21 @@ public class Person {
 		this.health = new Attribute(health);
 	}
 	
-	public String getName() {
+	public String getName(){
 		return name;
+	}
+	
+	public Integer getLoc(){
+		return location;
+	}
+	
+	public void move(Integer location){
+		this.location = location;
+	}
+	
+	public String getInventory(){
+		String str = new String();
+		str += this.name + " has: \n" + this.inventory.toString();
+		return str;
 	}
 }

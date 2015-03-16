@@ -2,7 +2,7 @@ package Tsiram;
 
 public class Player extends Person{
 
-	public Integer xp;
+	public Attribute xp = new Attribute(0);
 	
 	public Attribute mana;
 	
@@ -10,5 +10,4 @@ public class Player extends Person{
 		super(name, location, health);
 		this.mana = new Attribute(mana);
 	}
-	
 }

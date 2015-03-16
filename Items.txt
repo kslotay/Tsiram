@@ -1,12 +1,13 @@
+Item/0/Map/Location Map/0/true/1/
 Item/3/Pizza/Delicious Pizza. Can be eaten./2/true/2/
 Item/3/Pasta/Pasta with Marinara sauce. Can be eaten./3/true/1/
 Item/3/Sushi/Tuna-Avacado Sushi. Can be eaten./3/true/3/
 Item/4/Flowers/Beautiful Tulips/2/false/5/
 Item/5/Throne Room Key/The Key To Prince Slotay's Tomb/1/true/1/
 Item/4/Mushrooms/Some mysterious mushroom said to have some interesting properties./5/true/3/
-Coins/6/100/
-Item/tomb/Slotay's Tomb/The Tomb of Prince Slotay. The 8th wonder of the world./50000/false/1/
+Item/6/Slotay's Tomb/The Tomb of Prince Slotay. The 8th wonder of the world./50000/false/1/
 Item/1/Couch Set/A set of couches/200/false/1/
+Coins/6/100/
 Safe/2/President's safe/Some say there are 3 million reasons to open it/500/0123/true/3000000/50/1/
 Weapon/7/Rocket Launcher/Causes explosions. Use with caution./320/100/10/2/
 Weapon/7/Revolver/Classic 6 in the chamber revolver./220/25/12/3/

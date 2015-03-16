@@ -9,7 +9,7 @@ public class Safe extends Item{
 	
 	private Boolean locked;
 	
-	private Inventory contents;
+	private Inventory contents = new Inventory();
 	
 	public Safe(String name, String desc, Integer value, String code, Boolean locked) {
 		super(name, desc, value, false);
