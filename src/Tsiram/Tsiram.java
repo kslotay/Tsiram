@@ -5,11 +5,15 @@ package Tsiram;
 import java.util.*;
 import java.io.*;
 
+import Tsiram.Items.Item;
+import Tsiram.Items.Safe;
+import Tsiram.Items.Weapon;
+import Tsiram.Person.Player;
+
 /*
- * 03/09/2015
  * Kulvinder Lotay and Scott Jaffe
  * Software Development 1
- * Project 2
+ * Project 2.5
  */
 
 public class Tsiram {
@@ -30,8 +34,6 @@ public class Tsiram {
 		String response;
 		//Scanner for user input
 		Scanner scan = new Scanner(System.in);
-		//Integer that holds new location index
-		Integer newLoc = new Integer(0);
 		
 		//Initialize game parameters
 		init_locations();
@@ -54,49 +56,16 @@ public class Tsiram {
 			response = scan.next();
 			
 			if (response.equalsIgnoreCase("n") || response.equalsIgnoreCase("north")){
-				//Get new location index using current player location and direction
-				newLoc = navigate(player1.getLoc(), 0);
-				//Check if that particular navigation is possible
-				if(newLoc != -1){
-					//Use move method from Person class to assign new player location
-					player1.move(newLoc);
-					//Increment visited integer for that location
-					locationArray.get(player1.getLoc()).visited();
-				}
-				else{
-					//If action is not possible, display error message
-					update_display("You cannot go north!\n");
-				}
+				navigate(0);
 			}
 			else if (response.equalsIgnoreCase("e") || response.equalsIgnoreCase("east")){
-				newLoc = navigate(player1.getLoc(), 1);
-				if(newLoc != -1){
-					locationArray.get(player1.getLoc()).visited();
-					player1.move(newLoc);
-				}
-				else{
-					update_display("You cannot go east!\n");
-				}
+				navigate(1);
 			}
 			else if (response.equalsIgnoreCase("s") || response.equalsIgnoreCase("south")){
-				newLoc = navigate(player1.getLoc(), 2);
-				if(newLoc != -1){
-					locationArray.get(player1.getLoc()).visited();
-					player1.move(newLoc);
-				}
-				else{
-					update_display("You cannot go south!\n");
-				}
+				navigate(2);
 			}
 			else if (response.equalsIgnoreCase("w") || response.equalsIgnoreCase("west")){
-				newLoc = navigate(player1.getLoc(), 3);
-				if(newLoc != -1){
-					locationArray.get(player1.getLoc()).visited();
-					player1.move(newLoc);
-				}
-				else{
-					update_display("You cannot go west!\n");
-				}
+				navigate(3);
 			}
 			else if (response.equalsIgnoreCase("take") || response.equalsIgnoreCase("t")){
 				//Check if location has usable items (comparing usable boolean for items)
@@ -131,6 +100,9 @@ public class Tsiram {
 				else {
 					update_display("You do not have the map in your inventory!");
 				}
+			}
+			else if (response.equalsIgnoreCase("help")){
+				
 			}
 			//Quit game
 			else if (response.equalsIgnoreCase("q")){
@@ -319,8 +291,41 @@ public class Tsiram {
 		}
 	}
 	
+	//private static void take(String args){
+		//
+	//}
+	
+	private static void navigate(Integer dir){
+		//Get new location index using current player location and direction
+		Integer newLoc = new Integer(getNewLoc(player1.getLoc(), dir));
+		//Check if that particular navigation is possible
+		if(newLoc != -1){
+			//Use move method from Person class to assign new player location
+			player1.move(newLoc);
+			//Increment visited integer for that location
+			locationArray.get(player1.getLoc()).visited();
+		}
+		else{
+			//If action is not possible, display error message
+			switch(dir){
+			case 0:
+				update_display("You cannot go north!\n");
+				break;
+			case 1:
+				update_display("You cannot go east!\n");
+				break;
+			case 2:
+				update_display("You cannot go south!\n");
+				break;
+			case 3:
+				update_display("You cannot go west!\n");
+				break;
+			}
+		}
+	}
+	
 	//Navigation method, returns -1 for navigation actions that are not permitted
-	private static Integer navigate(Integer current_loc, Integer dir){
+	private static Integer getNewLoc(Integer current_loc, Integer dir){
 		//Uses location navigation data from the current location navigation array
 		Integer dest = locationArray.get(current_loc).getNav()[dir];
 		return dest;

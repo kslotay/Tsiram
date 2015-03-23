@@ -1,5 +1,9 @@
 package Tsiram;
-//Kulvinder Lotay and Scott Jaffe
+/*
+ * Kulvinder Lotay and Scott Jaffe
+ * Software Development 1
+ * Project 2.5
+ */
 
 //Item-specific math procedures. For elements that require an upper limit e.g. ammo, health etc.
 public class Attribute {

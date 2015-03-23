@@ -1,5 +1,11 @@
 package Tsiram;
-//Kulvinder Lotay and Scott Jaffe
+
+import Inventory.Inventory;
+/*
+ * Kulvinder Lotay and Scott Jaffe
+ * Software Development 1
+ * Project 2.5
+ */
 
 public class Location {
 	
