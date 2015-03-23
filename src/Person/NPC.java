@@ -1,4 +1,4 @@
-package Tsiram;
+package Person;
 import java.util.*;
 
 //Non-Player Characters, extends Person class

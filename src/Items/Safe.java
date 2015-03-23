@@ -1,4 +1,4 @@
-package Tsiram.Items;
+package Items;
 
 import Inventory.Inventory;
 

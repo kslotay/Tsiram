@@ -1,4 +1,4 @@
-package Tsiram.Items;
+package Items;
 /*
  * Kulvinder Lotay and Scott Jaffe
  * Software Development 1

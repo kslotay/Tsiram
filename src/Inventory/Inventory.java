@@ -1,7 +1,7 @@
 package Inventory;
 import java.util.*;
 
-import Tsiram.Items.Item;
+import Items.Item;
 
 //Inventory class extends ArrayList of Inventory items
 public class Inventory extends ArrayList<InventoryItem>{

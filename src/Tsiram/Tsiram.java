@@ -5,10 +5,10 @@ package Tsiram;
 import java.util.*;
 import java.io.*;
 
-import Tsiram.Items.Item;
-import Tsiram.Items.Safe;
-import Tsiram.Items.Weapon;
-import Tsiram.Person.Player;
+import Items.Item;
+import Items.Safe;
+import Items.Weapon;
+import Person.Player;
 
 /*
  * Kulvinder Lotay and Scott Jaffe

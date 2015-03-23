@@ -1,4 +1,4 @@
-package Tsiram.Person;
+package Person;
 
 import Tsiram.Attribute;
 
