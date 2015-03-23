@@ -67,10 +67,10 @@ public class Location {
 		String msg = new String();
 		
 		switch(this.visited) {
-		case 0:
+		case 1:
 			current_desc = 0;
 			break;
-		case 1:
+		case 2:
 			current_desc = 1;
 			break;
 		default:
@@ -80,6 +80,9 @@ public class Location {
 		if(inventory.usableItems() > 0){
 			msg = "\n\nThe location contains:\n";
 			msg += inventory.toString();
+		}
+		else{
+			msg = "\n";
 		}
 		
 		return desc[current_desc] + msg;

@@ -24,6 +24,9 @@ public class Tsiram {
 	//Creates player object
 	public static Player player1;
 	
+	//User input scanner
+	public static Scanner scan = new Scanner(System.in);
+	
 	/**
 	 * @param args
 	 * @throws IOException 
@@ -32,8 +35,6 @@ public class Tsiram {
 
 		//Holds player response
 		String response;
-		//Scanner for user input
-		Scanner scan = new Scanner(System.in);
 		
 		//Initialize game parameters
 		init_locations();
@@ -44,13 +45,13 @@ public class Tsiram {
 		do{
 			
 			//Displays the current location
-			update_display("Your current Location is: " + locationArray.get(player1.getLoc()).getName() + "\n\n");
+			update_display("\n\n\nYour current Location is: " + locationArray.get(player1.getLoc()).getName() + "\n\n");
 			
 			//Displays current location description, along with any items that may be in that location
-			update_display(locationArray.get(player1.getLoc()).currentDesc());
+			update_display(locationArray.get(player1.getLoc()).currentDesc() + "\n");
 			
 			//Request player input
-			update_display("\n\nEnter your next move: ");
+			update_display("Enter your next move: ");
 			
 			//Store player response in response string variable
 			response = scan.next();
@@ -67,46 +68,51 @@ public class Tsiram {
 			else if (response.equalsIgnoreCase("w") || response.equalsIgnoreCase("west")){
 				navigate(3);
 			}
+			
+			//Take command
 			else if (response.equalsIgnoreCase("take") || response.equalsIgnoreCase("t")){
-				//Check if location has usable items (comparing usable boolean for items)
-				if(locationArray.get(player1.getLoc()).inventory.usableItems() > 0){
-					//If there are usable items, take 1 of each (if more than 1)
-					update_display("\nYou have taken:\n");
-					for (int i = 0, len = locationArray.get(player1.getLoc()).inventory.size(); i < len; i++){
-						if (locationArray.get(player1.getLoc()).inventory.get(i).item.usable){
-							//Add item to player inventory
-							player1.inventory.addItem(locationArray.get(player1.getLoc()).inventory.get(i).item, 1);
-							update_display(locationArray.get(player1.getLoc()).inventory.get(i).item.name + " x 1\n");
-							//Remove item from location inventory
-							locationArray.get(player1.getLoc()).inventory.removeItem(locationArray.get(player1.getLoc()).inventory.get(i).item, 1);
-						}
-					}
+				//If location has usable items call take function, else display error message
+				if (locationArray.get(player1.getLoc()).inventory.usableItems() > 0){
+					cmdTake();
+				}
+				else {
+					update_display("\nThere are no items to take.");
 				}
 			}
+			
 			//Display player inventory
 			else if (response.equalsIgnoreCase("inventory") || response.equalsIgnoreCase("i")){
 				if (!player1.inventory.isEmpty()){
 					update_display(player1.getInventory());
 				}
 				else {
-					update_display("\nYou have no items in inventory");
+					update_display("\nYou have no items in inventory.");
 				}
 			}
+			
 			//Show map if player has map in inventory
 			else if (response.equalsIgnoreCase("m") || response.equalsIgnoreCase("map")){
 				if (player1.inventory.hasItem("Map")){
 					drawMap();
 				}
 				else {
-					update_display("You do not have the map in your inventory!");
+					update_display("\nYou do not have the map in your inventory!");
 				}
 			}
+			
+			//Help command
 			else if (response.equalsIgnoreCase("help")){
-				
+				update_display("The help command is still being implemented. Contact kulvinder.lotay1@marist.edu for any inquiries.");
 			}
+			
 			//Quit game
 			else if (response.equalsIgnoreCase("q")){
 				update_display("\nThanks for playing!\n");
+			}
+			
+			//Display error message for invalid commands
+			else {
+				update_display("\nPlease enter a valid command. Type help for more information.");
 			}
 		} while (!response.equalsIgnoreCase("q"));
 		
@@ -155,6 +161,7 @@ public class Tsiram {
 	private static void init_items() throws IOException {
 		
 		//Items.txt file template: Item_type/Location_id/Name/Description/Value/Usable/Quantity/
+		//File Info: Usable items MUST all come before non-usable items or take command display message is broken
 		
 		//Temporary variables for items data
 		int loc_id, value, damage, ammo, quantity, cash_amount, coins_amount;
@@ -228,10 +235,11 @@ public class Tsiram {
 		//Initialize player
 		player1 = new Player("Player1", 0, 1000, 100);
 		player1.xp.new_max(100);
+		locationArray.get(player1.getLoc()).visited();
 		
 		//Intro display messages
 		update_display("Welcome to Tsiram!\n\n");
-		update_display("Move using n, e, s, w. To quit the game, type q at any time.\n\n");
+		update_display("Move using n, e, s, w. Use t or take to take items from a location. To quit the game, type q.");
 	}
 	
 	//Draw ASCII Map
@@ -291,9 +299,45 @@ public class Tsiram {
 		}
 	}
 	
-	//private static void take(String args){
-		//
-	//}
+	//Take command function
+	private static void cmdTake(){
+		//Holder variables
+		Item item;
+		String response;
+		
+		//Check if location has usable items (comparing usable boolean for items)
+		update_display("\nWhich item would you like to take?\n");
+		for (int i = 0, n = 1, len = locationArray.get(player1.getLoc()).inventory.size(); i < len; i++, n++){
+			//List usable items
+			if(locationArray.get(player1.getLoc()).inventory.get(i).item.usable){
+				update_display(n + ". " + locationArray.get(player1.getLoc()).inventory.get(i).item.name);
+				
+				//If at last item, ask for response
+				if (!(i == (locationArray.get(player1.getLoc()).inventory.usableItems() - 1))){
+					update_display("\n");
+				}
+				else {
+					update_display("\n\nType n, where n is the item number: ");
+				}
+			}
+		}
+			
+		//Hold user response in 'response' variable
+		response = scan.next();
+		//Try to add item to player inventory, and remove from location inventory
+		//If response provides a wrong index value causing an IndexOutOfBoundsException, display error message
+		try {
+			item = locationArray.get(player1.getLoc()).inventory.get((Integer.parseInt(response) - 1)).item;
+			player1.inventory.addItem(item, 1);
+			update_display("You have taken 1 x " + item.name + ".");
+			if (item.name.equals("Map")){
+				update_display("\n\nYou have the in-game map! You can access it by typing m or map.");
+			}
+			locationArray.get(player1.getLoc()).inventory.removeItem(item, 1);
+		} catch ( IndexOutOfBoundsException e ) {
+		    update_display("Item is not available at this location!");
+		}
+	}
 	
 	private static void navigate(Integer dir){
 		//Get new location index using current player location and direction
@@ -309,16 +353,16 @@ public class Tsiram {
 			//If action is not possible, display error message
 			switch(dir){
 			case 0:
-				update_display("You cannot go north!\n");
+				update_display("You cannot go north!");
 				break;
 			case 1:
-				update_display("You cannot go east!\n");
+				update_display("You cannot go east!");
 				break;
 			case 2:
-				update_display("You cannot go south!\n");
+				update_display("You cannot go south!");
 				break;
 			case 3:
-				update_display("You cannot go west!\n");
+				update_display("You cannot go west!");
 				break;
 			}
 		}
