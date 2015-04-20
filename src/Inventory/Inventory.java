@@ -12,7 +12,7 @@ public class Inventory extends ArrayList<InventoryItem>{
 	private static final long serialVersionUID = -8260358044702477284L;
 
 	//Find item using item name
-	private InventoryItem findItem(String itemName){
+	public InventoryItem findItem(String itemName){
 		for (int i = 0, len = this.size(); i < len; i++){
 			if (this.get(i).item.name.equals(itemName)){
 				return this.get(i);
@@ -22,7 +22,7 @@ public class Inventory extends ArrayList<InventoryItem>{
 	}
 	
 	//Find item using identifier
-	private InventoryItem getItem(Item item){
+	public InventoryItem getItem(Item item){
 		return findItem(item.name);
 	}
 	

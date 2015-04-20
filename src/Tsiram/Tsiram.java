@@ -5,9 +5,11 @@ package Tsiram;
 import java.util.*;
 import java.io.*;
 
+import Inventory.InventoryItem;
 import Items.Item;
 import Items.Safe;
 import Items.Weapon;
+import Items.MagicItem;
 import Person.Player;
 
 /*
@@ -21,6 +23,8 @@ public class Tsiram {
 	//ArrayList that holds all instantiated Location objects
 	public static ArrayList<Location> locationArray = new ArrayList<Location>();
 	
+	public static LinkedList<MagicItem> magicitems = new LinkedList<MagicItem>();
+	
 	//Creates player object
 	public static Player player1;
 	
@@ -33,8 +37,11 @@ public class Tsiram {
 	 */
 	public static void main(String[] args) throws IOException {
 
+		Scanner delimScan = new Scanner(System.in);
+		delimScan.useDelimiter("'");
+		
 		//Holds player response
-		String response;
+		String response, response2, search_str;
 		
 		//Initialize game parameters
 		init_locations();
@@ -51,7 +58,12 @@ public class Tsiram {
 			update_display(locationArray.get(player1.getLoc()).currentDesc() + "\n");
 			
 			//Request player input
-			update_display("Enter your next move: ");
+			if(player1.getLoc() == 8){
+				update_display("Would you like to buy an item from the Magic Shop? (Y/X) ");
+			}
+			else {
+				update_display("Enter your next move: ");
+			}
 			
 			//Store player response in response string variable
 			response = scan.next();
@@ -105,6 +117,49 @@ public class Tsiram {
 				update_display("The help command is still being implemented. Contact kulvinder.lotay1@marist.edu for any inquiries.");
 			}
 			
+			//If player responds yes while in magic shop
+			else if (response.equalsIgnoreCase("y")){
+				search_str = "";
+				int min, max;
+				min = magicitems.indexOf(magicitems.getFirst());
+				max = magicitems.indexOf(magicitems.getLast());
+				int index = min;
+				Boolean found = false;
+				
+				update_display("Please enter the name of the item you would like to search for (within quotations e.g. 'rags'): ");
+				search_str = delimScan.next();
+								
+				while((!found) && (index <= max)){
+					found = magicitems.get(index).name.equalsIgnoreCase(search_str);
+					index++;
+				}
+				
+				if(found){
+					update_display("Would you like to buy this item? " + magicitems.get(index - 1).name + " - " + magicitems.get(index - 1).value + " Gold  (Y/N) ");
+					response2 = scan.next();
+					if (response2.equalsIgnoreCase("y")){
+						if (!(player1.inventory.findItem("Gold Coin(s)") == null)){
+							if (player1.inventory.findItem("Gold Coin(s)").quantity >= magicitems.get(index).value){
+								player1.inventory.findItem("Gold Coin(s)").quantity -= magicitems.get(index).value;
+								player1.inventory.addItem(magicitems.get(index), 1);
+								update_display("You have bought 1 x " + magicitems.get(index).name);
+								magicitems.remove(index);
+							}
+						}
+						else {
+							update_display("You do not have enough gold to purchase this item!");
+						}
+					}
+				}
+				else{
+					update_display("Item not found!");
+				}
+			}
+			
+			else if (response.equalsIgnoreCase("x")){
+				update_display("Bye!");
+			}
+			
 			//Quit game
 			else if (response.equalsIgnoreCase("q")){
 				update_display("\nThanks for playing!\n");
@@ -117,6 +172,7 @@ public class Tsiram {
 		} while (!response.equalsIgnoreCase("q"));
 		
 		scan.close();
+		delimScan.close();
 	}
 	
 	//Initialize Locations
@@ -172,6 +228,7 @@ public class Tsiram {
 		Item coins = new Item("Gold Coin(s)", "24 karat gold coins. Looks like you just struck... gold.", 40, true);
 		Safe safe;
 		Item item;
+		MagicItem magicitem;
 		
 		Scanner fileScan = new Scanner (new File("Items.txt"));
 		fileScan.useDelimiter("/");
@@ -225,8 +282,16 @@ public class Tsiram {
 			fileScan.nextLine();
 		}
 		
-		fileScan.close();
+		fileScan = new Scanner(new File("magicitems.txt"));
 		
+		while (fileScan.hasNext()) {
+			name = fileScan.nextLine();
+			value = (int)((Math.random() * 20) + 1);
+			magicitem = new MagicItem(name, value);
+			magicitems.add(magicitem);
+		}
+		
+		fileScan.close();
 	}
 
 	//Initialize game
@@ -302,7 +367,7 @@ public class Tsiram {
 	//Take command function
 	private static void cmdTake(){
 		//Holder variables
-		Item item;
+		InventoryItem inv_item;
 		String response;
 		
 		//Check if location has usable items (comparing usable boolean for items)
@@ -327,13 +392,13 @@ public class Tsiram {
 		//Try to add item to player inventory, and remove from location inventory
 		//If response provides a wrong index value causing an IndexOutOfBoundsException, display error message
 		try {
-			item = locationArray.get(player1.getLoc()).inventory.get((Integer.parseInt(response) - 1)).item;
-			player1.inventory.addItem(item, 1);
-			update_display("You have taken 1 x " + item.name + ".");
-			if (item.name.equals("Map")){
+			inv_item = locationArray.get(player1.getLoc()).inventory.get((Integer.parseInt(response) - 1));
+			player1.inventory.addItem(inv_item.item, inv_item.quantity);
+			update_display("You have taken " + inv_item.quantity +  " x " + inv_item.item.name + ".");
+			if (inv_item.item.name.equals("Map")){
 				update_display("\n\nYou have the in-game map! You can access it by typing m or map.");
 			}
-			locationArray.get(player1.getLoc()).inventory.removeItem(item, 1);
+			locationArray.get(player1.getLoc()).inventory.removeItem(inv_item.item, inv_item.quantity);
 		} catch ( IndexOutOfBoundsException e ) {
 		    update_display("Item is not available at this location!");
 		}
